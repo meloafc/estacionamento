@@ -10,13 +10,11 @@ services:
     MYSQL_PASSWORD: root
    ports:
    - "3306:3306"
-   restart: always
    networks:
       - main
 
   backend:
     container_name: backend
-    restart: always
     build: ./backend
     working_dir: /backend
     volumes:
@@ -27,6 +25,17 @@ services:
     command: mvn clean spring-boot:run
     depends_on:
       - mysql
+    networks:
+      - main
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - mysql
+      - backend
     networks:
       - main
 
