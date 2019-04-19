@@ -1,7 +1,9 @@
 package com.meloafc.estacionamento.controller;
 
 import com.meloafc.estacionamento.model.Horario;
-import com.meloafc.estacionamento.repository.HorarioRepository;
+import com.meloafc.estacionamento.service.HorarioService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,16 +16,36 @@ import java.util.List;
 public class HorarioController {
 
     @Autowired
-    HorarioRepository horarioRepository;
+    HorarioService horarioService;
 
     @GetMapping()
-    public List<Horario> listar() {
-        return horarioRepository.findAll();
+    @ApiOperation(value = "Listar todos os horarios")
+    public List<Horario> getAll() {
+        return horarioService.getAll();
+    }
+
+    @GetMapping(value = "/{id}")
+    @ApiOperation(value = "Consultar por id")
+    public Horario findById(@ApiParam(value = "id", required = true) @PathVariable Long id) {
+        return horarioService.get(id);
     }
 
     @PostMapping()
-    public Horario criar(@Valid @RequestBody Horario horario) {
-        return horarioRepository.save(horario);
+    @ApiOperation(value = "Salvar horario")
+    public Horario create(@Valid @RequestBody Horario horario) {
+        return horarioService.add(horario);
+    }
+
+    @PutMapping()
+    @ApiOperation(value = "Atualizar horario")
+    public Horario update(@Valid @RequestBody Horario horario) {
+        return horarioService.update(horario);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    @ApiOperation(value = "Deletar horario")
+    public void delete(@ApiParam(value = "id", required = true) @PathVariable Long id) {
+        horarioService.removeById(id);
     }
 
 }

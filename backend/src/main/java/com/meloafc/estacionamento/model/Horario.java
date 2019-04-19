@@ -1,10 +1,10 @@
 package com.meloafc.estacionamento.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Time;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,21 +13,26 @@ import java.sql.Time;
 @NoArgsConstructor
 @Entity
 @Table(name="horarios")
-public class Horario implements Serializable {
+public class Horario implements BaseModel<Long> {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Integer diaDaSemana;
 
-    //@DateTimeFormat(pattern="HH:mm:ss" )
-    //@Temporal(TemporalType.TIME)
-    //@Column(name = "end_time")
-    private Time horaInicial;
-
-    private Time horaFinal;
-
     private Double valor;
+
+    @Temporal(TemporalType.TIME)
+    @JsonFormat(pattern="HH:mm:ss")
+    @Column(name="hora_inicial")
+    private Date horaInicial;
+
+    @Temporal(TemporalType.TIME)
+    @JsonFormat(pattern="HH:mm:ss")
+    @Column(name="hora_final")
+    private Date horaFinal;
+
 }
