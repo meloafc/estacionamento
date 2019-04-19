@@ -1,5 +1,7 @@
 package com.meloafc.estacionamento.controller;
 
+import com.meloafc.estacionamento.dto.HorarioDTO;
+import com.meloafc.estacionamento.mapper.HorarioMapper;
 import com.meloafc.estacionamento.model.Horario;
 import com.meloafc.estacionamento.service.HorarioService;
 import io.swagger.annotations.ApiOperation;
@@ -18,28 +20,32 @@ public class HorarioController {
     @Autowired
     HorarioService horarioService;
 
+    private final HorarioMapper horarioMapper = new HorarioMapper();
+
     @GetMapping()
     @ApiOperation(value = "Listar todos os horarios")
-    public List<Horario> getAll() {
-        return horarioService.getAll();
+    public List<HorarioDTO> getAll() {
+        return horarioMapper.convertToListDTO(horarioService.getAll());
     }
 
     @GetMapping(value = "/{id}")
     @ApiOperation(value = "Consultar por id")
-    public Horario findById(@ApiParam(value = "id", required = true) @PathVariable Long id) {
-        return horarioService.get(id);
+    public HorarioDTO findById(@ApiParam(value = "id", required = true) @PathVariable Long id) {
+        return horarioMapper.convertToDTO(horarioService.get(id));
     }
 
     @PostMapping()
     @ApiOperation(value = "Salvar horario")
-    public Horario create(@Valid @RequestBody Horario horario) {
-        return horarioService.add(horario);
+    public HorarioDTO create(@Valid @RequestBody HorarioDTO horarioDTO) {
+        Horario horario = this.horarioMapper.convertToEntity(horarioDTO);
+        return this.horarioMapper.convertToDTO(horarioService.add(horario));
     }
 
     @PutMapping()
     @ApiOperation(value = "Atualizar horario")
-    public Horario update(@Valid @RequestBody Horario horario) {
-        return horarioService.update(horario);
+    public HorarioDTO update(@Valid @RequestBody HorarioDTO horarioDTO) {
+        Horario horario = this.horarioMapper.convertToEntity(horarioDTO);
+        return this.horarioMapper.convertToDTO(horarioService.update(horario));
     }
 
     @DeleteMapping(value = "/{id}")

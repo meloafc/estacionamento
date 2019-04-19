@@ -1,6 +1,5 @@
 package com.meloafc.estacionamento.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,12 +25,10 @@ public class Horario implements BaseModel<Long> {
     private Double valor;
 
     @Temporal(TemporalType.TIME)
-    @JsonFormat(pattern="HH:mm:ss")
     @Column(name="hora_inicial")
     private Date horaInicial;
 
     @Temporal(TemporalType.TIME)
-    @JsonFormat(pattern="HH:mm:ss")
     @Column(name="hora_final")
     private Date horaFinal;
 
