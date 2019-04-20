@@ -10,6 +10,9 @@ import { EditarHorariosComponent } from './pages/editar-horarios/editar-horarios
 import { ListarMovimentosComponent } from './pages/listar-movimentos/listar-movimentos.component';
 import { EditarMovimentosComponent } from './pages/editar-movimentos/editar-movimentos.component';
 import { ListarRelatoriosComponent } from './pages/listar-relatorios/listar-relatorios.component';
+import { HorarioService } from './services/horario.service';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,11 +26,15 @@ import { ListarRelatoriosComponent } from './pages/listar-relatorios/listar-rela
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
     BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),
     ModalModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    HorarioService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,3 +1,49 @@
-<p>
-  editar-horarios works!
-</p>
+<h2 *ngIf="!isAtualizar">
+  Cadastrar preço
+</h2>
+
+<h2 *ngIf="isAtualizar">
+  Alterar preço
+</h2>
+
+<div class="form-group row">
+  <label for="diaSelect" class="col-sm-2 col-form-label">Dia da semana</label>
+  <div class="col-sm-10">
+    <select [(ngModel)]="horario.diaDaSemana" class="form-control" id="diaSelect">
+      <option value="0">Feriado</option>
+      <option value="1">Domingo</option>
+      <option value="2">Segunda</option>
+      <option value="3">Terça</option>
+      <option value="4">Quarta</option>
+      <option value="5">Quinta</option>
+      <option value="6">Sexta</option>
+      <option value="7">Sábado</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row">
+  <label for="valor" class="col-sm-2 col-form-label">Valor</label>
+  <div class="col-sm-10">
+    <input [(ngModel)]="horario.valor" type="number" class="form-control" id="valor" step="0.01" value="0">
+  </div>
+</div>
+
+<div class="form-group row">
+  <label for="horaInicial" class="col-sm-2 col-form-label">Hora inicial</label>
+  <div class="col-sm-10">
+    <input [(ngModel)]="horario.horaInicial" type="text" class="form-control" id="horaInicial" value="00:00"
+      maxlength="5">
+  </div>
+</div>
+
+<div class="form-group row">
+  <label for="horaFinal" class="col-sm-2 col-form-label">Hora final</label>
+  <div class="col-sm-10">
+    <input [(ngModel)]="horario.horaFinal" type="text" class="form-control" id="horaFinal" value="00:00" maxlength="5">
+  </div>
+</div>
+
+<button (click)="salvar()" type="button" class="btn btn-primary">Salvar</button>
+<button *ngIf="isAtualizar" (click)="excluir()" type="button" class="btn btn-danger">Excluir</button>
+<button routerLink="/listar-horarios" type="button" class="btn btn-secondary">Cancelar</button>
