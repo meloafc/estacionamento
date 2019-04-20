@@ -15,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MovimentoService } from './services/movimento.service';
 import { SairMovimentosComponent } from './pages/sair-movimentos/sair-movimentos.component';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -33,11 +35,13 @@ import { SairMovimentosComponent } from './pages/sair-movimentos/sair-movimentos
     FormsModule,
     BsDropdownModule.forRoot(),
     CollapseModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    BsDatepickerModule.forRoot()
   ],
   providers: [
     HorarioService,
-    MovimentoService
+    MovimentoService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

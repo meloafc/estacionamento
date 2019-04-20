@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Movimento } from '../models/movimento';
 
@@ -18,6 +18,11 @@ export class MovimentoService {
 
   getLista(): Observable<Movimento[]> {
     return this.http.get<Movimento[]>(this.URL);
+  }
+  
+  getPeriodo(dataInicial: string, dataFinal: string): Observable<Movimento[]> {
+    let params = new HttpParams().set("dataInicial",dataInicial).set("dataFinal", dataFinal);
+    return this.http.get<Movimento[]>(this.URL, { params: params });
   }
 
   cadastrar(movimento: Movimento): Observable<Movimento> {

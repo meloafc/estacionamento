@@ -1,3 +1,43 @@
-<p>
-  listar-relatorios works!
-</p>
+<h2>
+  Relatórios
+</h2>
+
+<div class="row">
+  <div class="col-xs-12 col-12 col-md-4 form-group">
+    <input type="text"
+           placeholder="Selecione um período"
+           class="form-control"
+           bsDaterangepicker
+           [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+           (bsValueChange)="onValueChange($event)">
+  </div>
+</div>
+
+<h4>
+  Valor total no período: {{ valorPeriodo }}
+</h4>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Placa</th>
+      <th scope="col">Modelo</th>
+      <th scope="col">Cor</th>
+      <th scope="col">Entrada</th>
+      <th scope="col">Saída</th>
+      <th scope="col">Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let i of movimentos">
+      <th scope="row">{{ i.id }}</th>
+      <td>{{ i.placa }}</td>
+      <td>{{ i.modelo }}</td>
+      <td>{{ i.cor }}</td>
+      <td>{{ i.dataInicial | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+      <td>{{ i.dataFinal | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+      <td>{{ i.valor }}</td>
+    </tr>
+  </tbody>
+</table>
