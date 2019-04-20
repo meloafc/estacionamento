@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BsDropdownModule, CollapseModule, ModalModule } from 'ngx-bootstrap';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,9 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    CollapseModule.forRoot(),
+    ModalModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
