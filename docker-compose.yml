@@ -4,6 +4,7 @@ services:
    container_name: mysql
    image: mysql/mysql-server:5.7
    environment:
+    #TZ: America/Manaus
     MYSQL_DATABASE: estacionamento
     MYSQL_ROOT_PASSWORD: root
     MYSQL_USER: root
@@ -22,7 +23,7 @@ services:
       - ~/.m2:/root/.m2
     ports:
       - "8080:8080"
-    command: mvn clean spring-boot:run
+    command: mvn clean spring-boot:run -DDATASOURCE.URL=jdbc:mysql://mysql:3306/estacionamento?useSSL=false -DDATASOURCE.USERNAME=root -DDATASOURCE.PASSWORD=root
     depends_on:
       - mysql
     networks:
