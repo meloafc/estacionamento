@@ -20,8 +20,13 @@ public class Movimento implements BaseModel<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "placa", nullable = false, length = 20)
     private String placa;
+
+    @Column(name = "modelo", length = 30)
     private String modelo;
+
+    @Column(name = "cor", length = 30)
     private String cor;
 
     private boolean feriado;
