@@ -13,6 +13,8 @@ import { ListarRelatoriosComponent } from './pages/listar-relatorios/listar-rela
 import { HorarioService } from './services/horario.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MovimentoService } from './services/movimento.service';
+import { SairMovimentosComponent } from './pages/sair-movimentos/sair-movimentos.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
     EditarHorariosComponent,
     ListarMovimentosComponent,
     EditarMovimentosComponent,
-    ListarRelatoriosComponent
+    ListarRelatoriosComponent,
+    SairMovimentosComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,8 @@ import { HttpClientModule } from '@angular/common/http';
     ModalModule.forRoot()
   ],
   providers: [
-    HorarioService
+    HorarioService,
+    MovimentoService
   ],
   bootstrap: [AppComponent]
 })

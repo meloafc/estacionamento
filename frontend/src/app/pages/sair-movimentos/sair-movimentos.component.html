@@ -1,0 +1,20 @@
+<h2>
+  Registrar saída
+</h2>
+
+<div class="form-group row">
+  <label for="placa" class="col-sm-2 col-form-label">Placa</label>
+  <div class="col-sm-10">
+    <input [(ngModel)]="placa" type="text" class="form-control" id="placa">
+  </div>
+</div>
+
+<div *ngIf="isSaiu" class="form-group row">
+  <label for="valor" class="col-sm-2 col-form-label">Valor</label>
+  <div class="col-sm-10">
+    <input [(ngModel)]="movimento.valor" type="text" class="form-control-plaintext" id="valor" disabled>
+  </div>
+</div>
+
+<button *ngIf="!isSaiu" (click)="sair()" type="button" class="btn btn-danger">Sair</button>
+<button *ngIf="!isSaiu" routerLink="/listar-movimentos" type="button" class="btn btn-secondary">Cancelar</button>

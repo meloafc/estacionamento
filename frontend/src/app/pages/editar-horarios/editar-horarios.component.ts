@@ -53,7 +53,7 @@ export class EditarHorariosComponent implements OnInit {
       this.alterar();
       return;
     }
-    console.log(this.horario);
+    
     this.horarioService.cadastrar(this.horario).subscribe(
       json => {
         this.navegarParaListagem();

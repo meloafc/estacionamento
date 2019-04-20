@@ -5,6 +5,7 @@ import { EditarHorariosComponent } from './pages/editar-horarios/editar-horarios
 import { ListarMovimentosComponent } from './pages/listar-movimentos/listar-movimentos.component';
 import { EditarMovimentosComponent } from './pages/editar-movimentos/editar-movimentos.component';
 import { ListarRelatoriosComponent } from './pages/listar-relatorios/listar-relatorios.component';
+import { SairMovimentosComponent } from './pages/sair-movimentos/sair-movimentos.component';
 
 const routes: Routes = [
   { path: '', component: ListarHorariosComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'editar-horarios', component: EditarHorariosComponent },
   { path: 'listar-movimentos', component: ListarMovimentosComponent },
   { path: 'editar-movimentos', component: EditarMovimentosComponent },
+  { path: 'sair-movimentos', component: SairMovimentosComponent },
   { path: 'listar-relatorios', component: ListarRelatoriosComponent },
   { path: '**', redirectTo: '' }
 ];
