@@ -1,5 +1,6 @@
 package com.meloafc.estacionamento.service.impl;
 
+import com.meloafc.estacionamento.enums.DiaDaSemana;
 import com.meloafc.estacionamento.exception.InvalidValueException;
 import com.meloafc.estacionamento.model.Horario;
 import com.meloafc.estacionamento.model.Movimento;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> implements MovimentoService {
@@ -28,12 +26,19 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
     private HorarioService horarioService;
 
     @Override
+    public List<Movimento> getAll() {
+        List<Movimento> movimentos = movimentoRepository.findAllByOrderByIdDesc();
+        calcularValor(movimentos);
+        return movimentos;
+    }
+
+    @Override
     public Movimento add(Movimento entity) {
         Calendar agora = Calendar.getInstance();
 
         entity = registrarDataDeEntrada(entity, agora.getTime());
 
-        if(isHorarioFechado(agora)) {
+        if(isHorarioFechado(agora, entity)) {
             throw new InvalidValueException("movimento.horario.notFound");
         }
 
@@ -58,13 +63,16 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
         return false;
     }
 
-    private boolean isHorarioFechado(Calendar agora) {
-        int diaDaSemana = getDiaDaSemana(agora);
+    private boolean isHorarioFechado(Calendar agora, Movimento movimento) {
+        int diaDaSemana = getDiaDaSemana(agora, movimento);
         List<Horario> horarios = horarioService.findByDiaDaSemana(diaDaSemana);
 
         Time timeAgora = DateTimeUtils.convert(agora);
         for(Horario horario : horarios) {
-            if(timeAgora.after(horario.getHoraInicial()) && timeAgora.before(horario.getHoraFinal())) {
+            Time timeInicio = DateTimeUtils.convert(horario.getHoraInicial());
+            Time timeFim = DateTimeUtils.convert(horario.getHoraFinal());
+
+            if(timeAgora.after(timeInicio) && timeAgora.before(timeFim)) {
                 return false;
             }
         }
@@ -72,14 +80,17 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
         return true;
     }
 
-    private int getDiaDaSemana(Calendar data) {
+    private int getDiaDaSemana(Calendar data, Movimento movimento) {
+        if(movimento.isFeriado()) {
+            return DiaDaSemana.FERIADO.id;
+        }
         return data.get(Calendar.DAY_OF_WEEK);
     }
 
-    private int getDiaDaSemana(Date data) {
+    private int getDiaDaSemana(Date data, Movimento movimento) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(data);
-        return getDiaDaSemana(calendar);
+        return getDiaDaSemana(calendar, movimento);
     }
 
     private Movimento registrarDataDeEntrada(Movimento entity, Date data) {
@@ -94,6 +105,13 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
     }
 
     @Override
+    public List<Movimento> pesquisarNoPeriodo(Date dataInicial, Date dataFinal) {
+        List<Movimento> movimentos = movimentoRepository.findAllByDataInicialBetween(dataInicial, dataFinal);
+        calcularValor(movimentos);
+        return movimentos;
+    }
+
+    @Override
     public Movimento sair(String placa) {
         Movimento movimento = movimentoRepository.findFirstByPlacaAndDataFinalIsNull(placa);
         if(movimento == null) {
@@ -102,7 +120,7 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
 
         movimento = registrarDataDeSaida(movimento, Calendar.getInstance().getTime());
 
-        int diaDaSemana = getDiaDaSemana(movimento.getDataInicial());
+        int diaDaSemana = getDiaDaSemana(movimento.getDataInicial(), movimento);
         List<Horario> horarios = horarioService.findByDiaDaSemana(diaDaSemana);
         calcularValor(movimento, horarios);
 
@@ -164,6 +182,31 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
 
         movimento.setValor(valorTotal);
         return movimento;
+    }
+
+    @Override
+    public List<Movimento> calcularValor(List<Movimento> movimentos) {
+        Map<Integer, List<Horario>> horariosMap = new HashMap<>();
+
+        for(Movimento movimento : movimentos) {
+            int diaDaSemana = getDiaDaSemana(movimento.getDataInicial(), movimento);
+            List<Horario> horarios = getHorarios(diaDaSemana, horariosMap);
+            calcularValor(movimento, horarios);
+        }
+
+        return movimentos;
+    }
+
+    private List<Horario> getHorarios(int diaDaSemana, Map<Integer, List<Horario>> horariosMap) {
+        if(horariosMap == null) {
+            horariosMap = new HashMap<>();
+        }
+
+        if(!horariosMap.containsKey(diaDaSemana)) {
+            horariosMap.put(diaDaSemana, horarioService.findByDiaDaSemana(diaDaSemana));
+        }
+
+        return horariosMap.get(diaDaSemana);
     }
 
     private boolean isPossuiIntercecao(Date date, Horario horario) {

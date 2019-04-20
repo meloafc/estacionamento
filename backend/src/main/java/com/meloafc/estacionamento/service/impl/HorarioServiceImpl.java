@@ -22,6 +22,11 @@ public class HorarioServiceImpl extends GenericServiceImpl<Horario, Long> implem
     }
 
     @Override
+    public List<Horario> getAll() {
+        return horarioRepository.findAllByOrderByIdDesc();
+    }
+
+    @Override
     public void validate(Horario entity) {
 
         // TODO: validar conflito de horario.

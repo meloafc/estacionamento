@@ -26,6 +26,11 @@ public final class DateTimeUtils {
         return sdf.parse(stringDate);
     }
 
+    public static Date convertStringDDMMYYYYToDate(String stringDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.parse(stringDate);
+    }
+
     public static String convertDateToHHMM(Date date) {
         if (date != null) {
             return new SimpleDateFormat("HH:mm").format(date);
