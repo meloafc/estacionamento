@@ -23,9 +23,9 @@ docker-compose up --build
 ```
 
 O docker irá instalar e configurar todas as dependências necessárias para executar a aplicação, depois de alguns minutos a aplicação estará execultando em:
-```bash
-http://localhost:4200
-```
+
++ backend: <http://localhost:8080/swagger-ui.html>
++ frontend: <http://localhost:4200>
 
 ## Instalação Manual
 ### Requisitos backend
