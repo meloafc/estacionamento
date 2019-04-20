@@ -26,9 +26,18 @@ public class HorarioServiceImpl extends GenericServiceImpl<Horario, Long> implem
 
         // TODO: validar conflito de horario.
 
+        if(entity.getHoraInicial() == null) {
+            throw new InvalidValueException("horario.horaInicial.mustBeFilled");
+        }
+
+        if(entity.getHoraFinal() == null) {
+            throw new InvalidValueException("horario.horaFinal.mustBeFilled");
+        }
+
         if(entity.getHoraInicial().after(entity.getHoraFinal())) {
             throw new InvalidValueException("horario.horaInicial.isAfter.horaFinal");
         }
+
         DiaDaSemana.get(entity.getDiaDaSemana());
         super.validate(entity);
     }

@@ -7,6 +7,7 @@ import com.meloafc.estacionamento.repository.MovimentoRepository;
 import com.meloafc.estacionamento.service.HorarioService;
 import com.meloafc.estacionamento.service.MovimentoService;
 import com.meloafc.estacionamento.utils.DateTimeUtils;
+import com.meloafc.estacionamento.utils.ValidateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,12 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
         }
 
         return super.add(entity);
+    }
+
+    @Override
+    public void validate(Movimento entity) {
+        ValidateUtils.checkNotNullOrEmpty(entity.getPlaca(), "placa.mustBeFilled");
+        super.validate(entity);
     }
 
     private boolean isPlacaRepetida(String placa) {
