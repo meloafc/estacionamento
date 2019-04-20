@@ -10,8 +10,10 @@ import com.meloafc.estacionamento.utils.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +69,12 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
         return data.get(Calendar.DAY_OF_WEEK);
     }
 
+    private int getDiaDaSemana(Date data) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(data);
+        return getDiaDaSemana(calendar);
+    }
+
     private Movimento registrarDataDeEntrada(Movimento entity, Date data) {
         entity.setDataInicial(data);
         entity.setDataFinal(null);
@@ -85,10 +93,75 @@ public class MovimentoServiceImpl extends GenericServiceImpl<Movimento, Long> im
             throw new InvalidValueException("placa.notFound");
         }
 
-        Calendar agora = Calendar.getInstance();
-        movimento = registrarDataDeSaida(movimento, agora.getTime());
+        movimento = registrarDataDeSaida(movimento, Calendar.getInstance().getTime());
+
+        int diaDaSemana = getDiaDaSemana(movimento.getDataInicial());
+        List<Horario> horarios = horarioService.findByDiaDaSemana(diaDaSemana);
+        calcularValor(movimento, horarios);
 
         return update(movimento);
+    }
+
+    @Override
+    public Movimento calcularValor(Movimento movimento, List<Horario> horarios) {
+        // TODO: verificar se os horarios sao do mesmo dia.
+
+        if(movimento.getDataInicial() == null || movimento.getDataFinal() == null) {
+            movimento.setValor(0d);
+            return movimento;
+        }
+
+        Time entrada = DateTimeUtils.convert(movimento.getDataInicial());
+        Time saida = DateTimeUtils.convert(movimento.getDataFinal());
+        double valorTotal = 0d;
+        double valorDoHorarioAtual = 0d;
+        boolean isHouveIntercecao = false;
+
+        horarios.sort(Comparator.comparing(o -> o.getHoraInicial()));
+
+        for(Horario horario : horarios) {
+
+            boolean isPeriodoSemHorario = isHouveIntercecao && !isPossuiIntercecao(entrada, horario);
+
+            if(isPeriodoSemHorario) {
+                long duracaoNoPeriodoSemHorario = horario.getHoraInicial().getTime() - entrada.getTime();
+                BigDecimal horas = DateTimeUtils.convertMillisecondsToHours(duracaoNoPeriodoSemHorario);
+                valorTotal += valorDoHorarioAtual * horas.doubleValue();
+                entrada = DateTimeUtils.convert(horario.getHoraInicial());
+            }
+
+            if(isPossuiIntercecao(entrada, horario)) {
+                isHouveIntercecao = true;
+                valorDoHorarioAtual = horario.getValor();
+
+                long duracaoNoHorario = 0;
+
+                boolean isSaidaMenorQueFinalDoHorario = saida.before(horario.getHoraFinal());
+
+                if(isSaidaMenorQueFinalDoHorario) {
+                    duracaoNoHorario = saida.getTime() - entrada.getTime();
+                    entrada = saida;
+                } else {
+                    duracaoNoHorario = horario.getHoraFinal().getTime() - entrada.getTime();
+                    entrada = DateTimeUtils.convert(horario.getHoraFinal());
+                }
+
+                BigDecimal horas = DateTimeUtils.convertMillisecondsToHours(duracaoNoHorario);
+                valorTotal += horario.getValor() * horas.doubleValue();
+
+                if(entrada.equals(saida) || entrada.after(saida)) {
+                    break;
+                }
+            }
+        }
+
+        movimento.setValor(valorTotal);
+        return movimento;
+    }
+
+    private boolean isPossuiIntercecao(Date date, Horario horario) {
+        return (horario.getHoraInicial().before(date) || horario.getHoraInicial().equals(date))
+                && (horario.getHoraFinal().after(date) || horario.getHoraFinal().equals(date));
     }
 
 }
