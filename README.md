@@ -47,6 +47,8 @@ git clone https://github.com/meloafc/estacionamento.git
 create database estacionamento
 ```
 
+[Scripts do banco de dados](https://github.com/meloafc/estacionamento/tree/master/backend/src/main/resources/db/migration)
+
 **3. Configurar usuário e senha do Mysql**
 
 + Abrir `src/main/resources/application.properties`
@@ -60,13 +62,13 @@ cd estacionamento/backend
 mvn spring-boot:run
 ```
 
-O backend começará a ser executado em <http://localhost:8080>.
+O backend começará a ser executado em <http://localhost:8080/swagger-ui.html>.
 
 ### Requisitos frontend
 
 1. Nodejs - 8.x.x
 2. NPM - 5.x.x
-3. Angular cli - 1.7.x
+3. Angular cli - ^7.3.8
 
 **1. Instalar as dependências do frontend**
 ```bash
@@ -82,6 +84,7 @@ O frontend começará a ser executado em http://localhost:4200.
 
 ### Tecnologias utilizadas
 + Spring boot
++ Junit
 + Mysql
 + Angular
 + Bootstrap
